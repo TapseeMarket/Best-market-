@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .shop-name {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .whatsapp-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+        }
+        
+        .whatsapp-icon {
+            font-size: 32px;
+            color: #25D366;
+        }
+        
+        .hidden-point {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: white;
+        }
+        
+        /* Admin Panel */
+        .admin-panel {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: none;
+        }
+        
+        .admin-panel h2 {
+            color: #6a11cb;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .admin-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .admin-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .admin-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Product Form */
+        .product-form {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: none;
+        }
+        
+        .form-title {
+            color: #6a11cb;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .product-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .product-info {
+            padding: 20px;
+        }
+        
+        .product-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .product-price {
+            font-size: 22px;
+            font-weight: 700;
+            color: #6a11cb;
+            margin-bottom: 15px;
+        }
+        
+        .product-description {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .order-btn {
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            color: white;
+            border: none;
+            padding: 12px 0;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        
+        .order-btn:hover {
+            background: linear-gradient(135deg, #128C7E 0%, #25D366 100%);
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+            margin-top: 40px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .admin-actions {
+                flex-direction: column;
+            }
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #25D366;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 5px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .countdown {
+            display: inline-block;
+            width: 30px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        /* Image Preview */
+        .image-preview {
+            width: 100%;
+            max-height: 200px;
+            border: 1px dashed #ddd;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .image-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .close-btn {
+            background: #666;
+            margin-top: 10px;
+        }
+        
+        /* Quick Order Modal */
+        .quick-order-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .quick-order-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .quick-order-title {
+            color: #6a11cb;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .quick-order-btn {
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            color: white;
+            border: none;
+            padding: 12px 0;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+        }
+        
+        /* Admin Product List */
+        .admin-product-list {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: none;
+        }
+        
+        .admin-product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .admin-product-info {
+            flex: 1;
+        }
+        
+        .admin-product-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .delete-admin-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        /* File Input Styling */
+        .file-input-container {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .file-input-button {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .file-input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .camera-icon {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <h1 class="shop-name" id="shopName">My Awesome Shop</h1>
+            <div class="whatsapp-info">
+                <i class="fab fa-whatsapp whatsapp-icon"></i>
+                <span id="whatsappNumber">918797221991</span>
+            </div>
+            <div class="hidden-point" id="hiddenPoint">
+                <span class="countdown" id="countdown">20</span>
+            </div>
+        </div>
+        
+        <!-- Admin Panel (Initially Hidden) -->
+        <div class="admin-panel" id="adminPanel">
+            <h2>Admin Panel</h2>
+            <div class="admin-actions">
+                <button class="admin-btn" id="updateShopNameBtn">
+                    <i class="fas fa-store"></i> Update Shop Name
+                </button>
+                <button class="admin-btn" id="updateWhatsAppBtn">
+                    <i class="fab fa-whatsapp"></i> Update WhatsApp Number
+                </button>
+                <button class="admin-btn" id="uploadProductBtn">
+                    <i class="fas fa-upload"></i> Upload Product
+                </button>
+                <button class="admin-btn" id="manageProductsBtn">
+                    <i class="fas fa-cog"></i> Manage Products
+                </button>
+                <button class="admin-btn" id="closeAdminBtn">
+                    <i class="fas fa-times"></i> Close Admin Panel
+                </button>
+            </div>
+        </div>
+        
+        <!-- Product Upload Form (Initially Hidden) -->
+        <div class="product-form" id="productForm">
+            <h2 class="form-title">Upload New Product</h2>
+            <div class="form-group">
+                <label for="productName">Product Name</label>
+                <input type="text" id="productName" class="form-control" placeholder="Enter product name">
+            </div>
+            <div class="form-group">
+                <label for="productPrice">Price (₹)</label>
+                <input type="number" id="productPrice" class="form-control" placeholder="Enter price">
+            </div>
+            <div class="form-group">
+                <label for="productDescription">Description</label>
+                <textarea id="productDescription" class="form-control" placeholder="Enter product description"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="productImage">Product Image</label>
+                <div class="file-input-container">
+                    <div class="file-input-button">
+                        <i class="fas fa-camera camera-icon"></i>
+                        <span id="fileInputText">Select Image from Mobile</span>
+                    </div>
+                    <input type="file" id="productImage" class="file-input" accept="image/*" capture="environment">
+                </div>
+                <div class="image-preview" id="imagePreview">
+                    <span>Image preview will appear here</span>
+                </div>
+            </div>
+            <button class="submit-btn" id="submitProduct">Upload Product</button>
+            <button class="submit-btn close-btn" id="closeProductForm">Cancel</button>
+        </div>
+        
+        <!-- Admin Product List (Initially Hidden) -->
+        <div class="admin-product-list" id="adminProductList">
+            <h2 class="form-title">Manage Products</h2>
+            <div id="adminProductsContainer">
+                <!-- Admin product list will be populated here -->
+            </div>
+            <button class="submit-btn close-btn" id="closeAdminProductList">Back to Admin Panel</button>
+        </div>
+        
+        <!-- Products Display Section -->
+        <h2 style="text-align: center; margin-bottom: 25px; color: #6a11cb;">Our Products</h2>
+        <div class="products-grid" id="productsGrid">
+            <!-- Products will be dynamically added here -->
+        </div>
+        
+        <!-- Quick Order Modal -->
+        <div class="quick-order-modal" id="quickOrderModal">
+            <div class="quick-order-content">
+                <h2 class="quick-order-title">Quick Order</h2>
+                <div class="form-group">
+                    <label for="quickCustomerName">Your Name</label>
+                    <input type="text" id="quickCustomerName" class="form-control" placeholder="Enter your name">
+                </div>
+                <div class="form-group">
+                    <label for="quickCustomerWhatsApp">Your WhatsApp Number</label>
+                    <input type="text" id="quickCustomerWhatsApp" class="form-control" placeholder="Enter your WhatsApp number">
+                </div>
+                <div class="form-group">
+                    <label for="quickOrderProduct">Product</label>
+                    <input type="text" id="quickOrderProduct" class="form-control" readonly>
+                    <input type="hidden" id="quickOrderProductId">
+                </div>
+                <button class="quick-order-btn" id="sendWhatsAppBtn">
+                    <i class="fab fa-whatsapp"></i> Send Order via WhatsApp
+                </button>
+                <button class="submit-btn close-btn" id="closeQuickOrder">Cancel</button>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>© 2023 Shop Management System. All rights reserved.</p>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const hiddenPoint = document.getElementById('hiddenPoint');
+            const countdownElement = document.getElementById('countdown');
+            const adminPanel = document.getElementById('adminPanel');
+            const productForm = document.getElementById('productForm');
+            const adminProductList = document.getElementById('adminProductList');
+            const productsGrid = document.getElementById('productsGrid');
+            const quickOrderModal = document.getElementById('quickOrderModal');
+            const shopNameElement = document.getElementById('shopName');
+            const whatsappNumberElement = document.getElementById('whatsappNumber');
+            const toast = document.getElementById('toast');
+            const adminProductsContainer = document.getElementById('adminProductsContainer');
+            const productImageInput = document.getElementById('productImage');
+            const imagePreview = document.getElementById('imagePreview');
+            const fileInputText = document.getElementById('fileInputText');
+            
+            // State variables
+            let countdownTimer = null;
+            let countdownValue = 20;
+            let products = JSON.parse(localStorage.getItem('products')) || [];
+            let currentProduct = null;
+            let uploadedImage = null;
+            
+            // Initialize the shop with sample products if empty
+            if (products.length === 0) {
+                products = [
+                    {
+                        id: 1,
+                        name: "Wireless Headphones",
+                        price: 2499,
+                        description: "High-quality wireless headphones with noise cancellation.",
+                        image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+                    },
+                    {
+                        id: 2,
+                        name: "Smart Watch",
+                        price: 4599,
+                        description: "Feature-rich smartwatch with health monitoring.",
+                        image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+                    },
+                    {
+                        id: 3,
+                        name: "Portable Bluetooth Speaker",
+                        price: 1999,
+                        description: "Compact Bluetooth speaker with impressive sound quality.",
+                        image: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+                    }
+                ];
+                localStorage.setItem('products', JSON.stringify(products));
+            }
+            
+            // Load shop name and WhatsApp number from localStorage
+            const shopName = localStorage.getItem('shopName') || 'My Awesome Shop';
+            const whatsappNumber = localStorage.getItem('whatsappNumber') || '918797221991';
+            
+            shopNameElement.textContent = shopName;
+            whatsappNumberElement.textContent = whatsappNumber;
+            
+            // Render products
+            renderProducts();
+            
+            // Image preview functionality
+            productImageInput.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    fileInputText.textContent = 'Change Image';
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                        uploadedImage = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    fileInputText.textContent = 'Select Image from Mobile';
+                    imagePreview.innerHTML = '<span>Image preview will appear here</span>';
+                    uploadedImage = null;
+                }
+            });
+            
+            // Hidden point functionality with countdown
+            hiddenPoint.addEventListener('mousedown', function() {
+                startCountdown();
+            });
+            
+            hiddenPoint.addEventListener('mouseup', function() {
+                resetCountdown();
+            });
+            
+            hiddenPoint.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                startCountdown();
+            });
+            
+            hiddenPoint.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                resetCountdown();
+            });
+            
+            // Start countdown function
+            function startCountdown() {
+                countdownValue = 20;
+                countdownElement.textContent = countdownValue;
+                
+                countdownTimer = setInterval(function() {
+                    countdownValue--;
+                    countdownElement.textContent = countdownValue;
+                    
+                    if (countdownValue <= 0) {
+                        clearInterval(countdownTimer);
+                        showAdminPanel();
+                    }
+                }, 1000);
+            }
+            
+            // Reset countdown function
+            function resetCountdown() {
+                clearInterval(countdownTimer);
+                countdownValue = 20;
+                countdownElement.textContent = countdownValue;
+            }
+            
+            // Admin panel buttons
+            document.getElementById('updateShopNameBtn').addEventListener('click', function() {
+                const newName = prompt('Enter new shop name:', shopName);
+                if (newName && newName.trim() !== '') {
+                    shopNameElement.textContent = newName;
+                    localStorage.setItem('shopName', newName);
+                    showToast('Shop name updated successfully!');
+                }
+            });
+            
+            document.getElementById('updateWhatsAppBtn').addEventListener('click', function() {
+                const newNumber = prompt('Enter new WhatsApp number:', whatsappNumber);
+                if (newNumber && newNumber.trim() !== '') {
+                    whatsappNumberElement.textContent = newNumber;
+                    localStorage.setItem('whatsappNumber', newNumber);
+                    showToast('WhatsApp number updated successfully!');
+                }
+            });
+            
+            document.getElementById('uploadProductBtn').addEventListener('click', function() {
+                productForm.style.display = 'block';
+                adminPanel.style.display = 'none';
+            });
+            
+            document.getElementById('manageProductsBtn').addEventListener('click', function() {
+                adminProductList.style.display = 'block';
+                adminPanel.style.display = 'none';
+                renderAdminProducts();
+            });
+            
+            document.getElementById('closeAdminBtn').addEventListener('click', function() {
+                adminPanel.style.display = 'none';
+            });
+            
+            document.getElementById('closeProductForm').addEventListener('click', function() {
+                productForm.style.display = 'none';
+                resetProductForm();
+            });
+            
+            document.getElementById('closeAdminProductList').addEventListener('click', function() {
+                adminProductList.style.display = 'none';
+                adminPanel.style.display = 'block';
+            });
+            
+            document.getElementById('closeQuickOrder').addEventListener('click', function() {
+                quickOrderModal.style.display = 'none';
+                resetQuickOrderForm();
+            });
+            
+            // Product form submission
+            document.getElementById('submitProduct').addEventListener('click', function() {
+                const name = document.getElementById('productName').value;
+                const price = document.getElementById('productPrice').value;
+                const description = document.getElementById('productDescription').value;
+                
+                if (!name || !price || !description || !uploadedImage) {
+                    showToast('Please fill all fields and upload an image');
+                    return;
+                }
+                
+                const newProduct = {
+                    id: Date.now(),
+                    name,
+                    price,
+                    description,
+                    image: uploadedImage
+                };
+                
+                products.push(newProduct);
+                localStorage.setItem('products', JSON.stringify(products));
+                
+                renderProducts();
+                productForm.style.display = 'none';
+                resetProductForm();
+                
+                showToast('Product uploaded successfully!');
+            });
+            
+            // WhatsApp order button
+            document.getElementById('sendWhatsAppBtn').addEventListener('click', function() {
+                const customerName = document.getElementById('quickCustomerName').value;
+                const customerWhatsApp = document.getElementById('quickCustomerWhatsApp').value;
+                const productId = document.getElementById('quickOrderProductId').value;
+                
+                if (!customerName || !customerWhatsApp) {
+                    showToast('Please fill all fields');
+                    return;
+                }
+                
+                const product = products.find(p => p.id == productId);
+                if (!product) {
+                    showToast('Product not found');
+                    return;
+                }
+                
+                const productName = product.name;
+                const productPrice = product.price;
+                
+                // Create WhatsApp message
+                const message = `Hello! I would like to order *${productName}* (₹${productPrice}).%0A%0A*My Details:*%0AName: ${customerName}%0AWhatsApp: ${customerWhatsApp}%0A%0APlease confirm my order. Thank you!`;
+                
+                // Open WhatsApp with pre-filled message
+                const whatsappURL = `https://wa.me/${whatsappNumber}?text=${message}`;
+                window.open(whatsappURL, '_blank');
+                
+                quickOrderModal.style.display = 'none';
+                resetQuickOrderForm();
+                
+                showToast('Order placed successfully!');
+            });
+            
+            // Function to render products for customers
+            function renderProducts() {
+                productsGrid.innerHTML = '';
+                
+                if (products.length === 0) {
+                    productsGrid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; padding: 40px;">No products available. Add some products using the admin panel.</p>';
+                    return;
+                }
+                
+                products.forEach(product => {
+                    const productCard = document.createElement('div');
+                    productCard.className = 'product-card';
+                    productCard.innerHTML = `
+                        <img src="${product.image}" alt="${product.name}" class="product-image">
+                        <div class="product-info">
+                            <h3 class="product-title">${product.name}</h3>
+                            <div class="product-price">₹${product.price}</div>
+                            <p class="product-description">${product.description}</p>
+                            <button class="order-btn" data-id="${product.id}">Order Now</button>
+                        </div>
+                    `;
+                    productsGrid.appendChild(productCard);
+                });
+                
+                // Add event listeners to order buttons
+                document.querySelectorAll('.order-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const productId = this.getAttribute('data-id');
+                        currentProduct = products.find(p => p.id == productId);
+                        
+                        document.getElementById('quickOrderProduct').value = currentProduct.name;
+                        document.getElementById('quickOrderProductId').value = currentProduct.id;
+                        quickOrderModal.style.display = 'flex';
+                    });
+                });
+            }
+            
+            // Function to render products for admin management
+            function renderAdminProducts() {
+                adminProductsContainer.innerHTML = '';
+                
+                if (products.length === 0) {
+                    adminProductsContainer.innerHTML = '<p style="text-align: center; padding: 20px;">No products available.</p>';
+                    return;
+                }
+                
+                products.forEach(product => {
+                    const productItem = document.createElement('div');
+                    productItem.className = 'admin-product-item';
+                    productItem.innerHTML = `
+                        <div class="admin-product-info">
+                            <h3>${product.name}</h3>
+                            <p>₹${product.price}</p>
+                        </div>
+                        <div class="admin-product-actions">
+                            <button class="delete-admin-btn" data-id="${product.id}">Delete</button>
+                        </div>
+                    `;
+                    adminProductsContainer.appendChild(productItem);
+                });
+                
+                // Add event listeners to delete buttons in admin panel
+                document.querySelectorAll('.delete-admin-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const productId = this.getAttribute('data-id');
+                        if (confirm('Are you sure you want to delete this product?')) {
+                            deleteProduct(productId);
+                        }
+                    });
+                });
+            }
+            
+            // Function to delete a product (only accessible from admin panel)
+            function deleteProduct(productId) {
+                products = products.filter(p => p.id != productId);
+                localStorage.setItem('products', JSON.stringify(products));
+                renderProducts();
+                renderAdminProducts();
+                showToast('Product deleted successfully!');
+            }
+            
+            // Function to show admin panel
+            function showAdminPanel() {
+                adminPanel.style.display = 'block';
+                showToast('Admin panel activated');
+            }
+            
+            // Function to show toast notification
+            function showToast(message) {
+                toast.textContent = message;
+                toast.style.display = 'block';
+                
+                setTimeout(function() {
+                    toast.style.display = 'none';
+                }, 3000);
+            }
+            
+            // Function to reset product form
+            function resetProductForm() {
+                document.getElementById('productName').value = '';
+                document.getElementById('productPrice').value = '';
+                document.getElementById('productDescription').value = '';
+                document.getElementById('productImage').value = '';
+                fileInputText.textContent = 'Select Image from Mobile';
+                imagePreview.innerHTML = '<span>Image preview will appear here</span>';
+                uploadedImage = null;
+            }
+            
+            // Function to reset quick order form
+            function resetQuickOrderForm() {
+                document.getElementById('quickCustomerName').value = '';
+                document.getElementById('quickCustomerWhatsApp').value = '';
+                document.getElementById('quickOrderProductId').value = '';
+            }
+        });
+    </script>
+</body>
+</html>
